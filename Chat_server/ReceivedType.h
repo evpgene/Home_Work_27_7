@@ -1,0 +1,13 @@
+enum ReceivedType {
+    NOTHING,
+    REGISTRATION,
+    LOGON,
+    COMPANION,
+    MESSAGE,
+    GET_USERNAMES,
+    CONTINUE_USERNAMES,
+    GET_MESSAGES,
+    CONTINUE_MESSAGES,
+    LOGOUT,
+    EXIT
+};
