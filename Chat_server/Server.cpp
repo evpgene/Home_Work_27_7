@@ -1,5 +1,6 @@
 #include "Server.h"
 
+
 Server::Server() {}
 Server::~Server() {}
 
@@ -111,9 +112,6 @@ ReceivedData Server::interpretString(const std::string& str) {
     str_view.remove_prefix(key.itExit.size() + key.sep.size());
     return ReceivedData(ReceivedType(EXIT), str_view);
   };
-
-
-  
 
   return ReceivedData(ReceivedType(NOTHING), "nothing");
 };

@@ -15,6 +15,8 @@
 #include "DB_Queries_DML_structures.h"
 #include "DB_Queries_MYSQL_Config.h"
 
+//New 2023_08_23
+#include <mutex>
 
 #define STRING_SIZE 255
 
@@ -30,9 +32,9 @@ using is_errors = bool;  // Execution Not OK. Errors occurred if = true;
 class DB_Queries_DML {
  private:
   MYSQL* mysql = new MYSQL;
-  // MYSQL_RES* res; // скорее нужно убрать, чем оставить
-  // MYSQL_ROW row; // скорее нужно убрать, чем оставить
   std::size_t lastInsertMessageId{0};  // ??? проверить как использовать
+
+  std::mutex mutex;
 
   Insert_User Insert_User_struct;
   Select_User_By_Id Select_User_By_Id_struct;

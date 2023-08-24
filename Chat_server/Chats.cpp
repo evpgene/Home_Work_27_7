@@ -1,35 +1,34 @@
 
 #include "Chats_functions.cpp"
+#include "Chats.h"
 
 void Chats::prepare(void) {
-  //DB_Queries_DDL db_queries_ddl;
+  // Создаём базу
   MYSQL_Config mysqlconfig_ddl;
-  mysqlconfig_ddl.passwd = (char*)("Root123_Root123");
+  mysqlconfig_ddl.passwd = (char *)("Root123_Root123");
   db_queries_ddl.connectToMySQLserver_open(mysqlconfig_ddl);
   db_queries_ddl.createDataBase();
   db_queries_ddl.connectToMySQLserver_close();
 
-  //DB_Queries_DML db_queries_dml;
-   MYSQL_Config mysqlconfig_dml = mysqlconfig_ddl;
-   mysqlconfig_dml.db = "chat_db";
+  // DB_Queries_DML db_queries_dml;
+  MYSQL_Config mysqlconfig_dml = mysqlconfig_ddl;
+  mysqlconfig_dml.db = "chat_db";
   db_queries_dml.connectDB_open(mysqlconfig_dml);
   db_queries_dml.prepareAll();
 }
 
 void Chats::shutdown(void) {
   db_queries_dml.closeAll();
-  //db_queries_ddl.connectToMySQLserver_close();
+  // db_queries_ddl.connectToMySQLserver_close();
 }
 
 void Chats::mainmenu() {
-
-
   // если пользователь общий не найден
   if (!(db_queries_dml.select_User_By_Login_fc("Общий") != nullptr)) {
     size_t user_id{0};
     // создаём пользователя для общего чата
     if (bool(user_id = db_queries_dml.insert_User_fc(
-             std::make_shared<User>(User(user_id, "Общий", "Общий"))))) {
+                 std::make_shared<User>(User(user_id, "Общий", "Общий"))))) {
       currentUserPtr = db_queries_dml.select_User_By_Id_fc(user_id);
     };
     // создаём чат общий и делаем его активным
@@ -41,15 +40,15 @@ void Chats::mainmenu() {
 void Chats::userinfo() {
   // распечатываем активного пользоваателя
   if (currentUserPtr) {
-      std::cout << "Активный пользователь: ";
-      currentUserPtr->printUser();
-      std::cout << endl;
+    std::cout << "Активный пользователь: ";
+    currentUserPtr->printUser();
+    std::cout << endl;
   }
   // распечатываем активный чат
   if (currentChatPtr) {
-      std::cout << "Активный чат: ";
-      currentChatPtr->printChatName();
-      std::cout << endl;
+    std::cout << "Активный чат: ";
+    currentChatPtr->printChatName();
+    std::cout << endl;
   }
 
   // распечатываем пречень всех зарегистрированных пользователей
@@ -65,12 +64,11 @@ void Chats::logon() {
   std::cin >> pass;
   // пусть нуль будет id для временных пользователей
   User_t user(std::make_shared<User>(0, login, pass));
-  if (!bool(currentUserPtr =
-                db_queries_dml.select_User_By_Login_fc(login))) {
-      std::cout << "Такого пользователя нет. " << std::endl;
-      return;
+  if (!bool(currentUserPtr = db_queries_dml.select_User_By_Login_fc(login))) {
+    std::cout << "Такого пользователя нет. " << std::endl;
+    return;
   }
-  if(*currentUserPtr != *user) {
+  if (*currentUserPtr != *user) {
     currentUserPtr = nullptr;
     std::cout << "Неверные учётные данные. " << std::endl;
   }
@@ -78,15 +76,21 @@ void Chats::logon() {
 
 // logon для сетевого интерфейса - ищет пользователя в базёнке
 User_t Chats::logon(const User_t user) {
-  if (!user) {return nullptr;} // проверка на нулевой указатель
+  if (!user) {
+    return nullptr;
+  }  // проверка на нулевой указатель
 
-  User_t restored_user{db_queries_dml.select_User_By_Login_fc(user->getLogin())};
-  if (!bool(restored_user)) {return nullptr;} // проверка на нулевой указатель
-  if(*user != *restored_user) {
+  User_t restored_user{
+      db_queries_dml.select_User_By_Login_fc(user->getLogin())};
+  if (!bool(restored_user)) {
+    return nullptr;
+  }  // проверка на нулевой указатель
+  if (*user != *restored_user) {
     std::cout << "Неверные учётные данные. " << std::endl;
-    return nullptr;}
-    return restored_user;
+    return nullptr;
   }
+  return restored_user;
+}
 
 // регистрация пользователя в базёнке для терминала
 no_errors Chats::userRegistration() {
@@ -98,28 +102,31 @@ no_errors Chats::userRegistration() {
   // пусть нуль будет id для временных пользователей
   User_t user(std::make_shared<User>(0, login, pass));
   if (bool(db_queries_dml.select_User_By_Login_fc(user->getLogin()))) {
-      std::cout << "Такой пользователь уже существует. " << std::endl;
-      return false;
+    std::cout << "Такой пользователь уже существует. " << std::endl;
+    return false;
   }
   if (db_queries_dml.insert_User_fc(user)) {
-      std::cout << "Регистрация прошла успешно. " << std::endl;
-      return true;
+    std::cout << "Регистрация прошла успешно. " << std::endl;
+    return true;
   }
   return false;
 }
 
 // регистрация пользователя в базёнке для сетевого интерфейса
 User_t Chats::userRegistration(const User_t user) {
-  if (!user) return nullptr; // проверка на нулевой указатель
+  if (!user) return nullptr;  // проверка на нулевой указатель
 
   // ищем пользователя с заданным логином
-  User_t restored_user{db_queries_dml.select_User_By_Login_fc(user->getLogin())};
+  User_t restored_user{
+      db_queries_dml.select_User_By_Login_fc(user->getLogin())};
   if (bool(restored_user)) {
     std::cout << "Такой пользователь уже есть. " << std::endl;
-    return nullptr;} // пользователь с  таким-же логином уже есть
+    return nullptr;
+  }  // пользователь с  таким-же логином уже есть
 
   // вносим нового пользователя в базёнку и находим его по id
-  return db_queries_dml.select_User_By_Id_fc(db_queries_dml.insert_User_fc(user));
+  return db_queries_dml.select_User_By_Id_fc(
+      db_queries_dml.insert_User_fc(user));
 }
 
 // Написать сообщение для терминала
@@ -146,34 +153,21 @@ void Chats::write() {
   } catch (const std::exception &e) {
     cout << endl << e.what() << endl;
   }
-  #if _DEBUG
+#if _DEBUG
   std::cout << "Компаньон: ";
   companion->printUser();
   std::cout << std::endl;
-  #endif
+#endif
 
   // выбираем чат по именам пользователей
   currentChatPtr = getChatByUsers(currentUserPtr, companion);
-
-  // Посмотри ниже внимательно!!! Так делать нельзя!
-  // хотя строки компилируются условно -
-  // разыменование указателя приводит к ошибке!!!
-
-  // #if _DEBUG
-  // std::cout << "Aктивный чат: ";
-  // std::cout << "активный чат: " << currentChatPtr->getId() << " : " << currentChatPtr->getChatName();
-  // std::cout << std::endl;
-  // #endif
 
   // если чата нет - создаём его
   if (!(currentChatPtr)) {
     //  создаём чат - добавляем его по имени и тут же считывааем по id.
     currentChatPtr = createChatByUsers(currentUserPtr, companion);
-    // currentChatPtr =
-    //     db_queries_dml.select_Chat_By_Id_fc(db_queries_dml.insert_Chat_fc(
-    //         getChatNameByUsers(currentUserPtr, companion)));
   }
-  //printAllMessages(currentChatPtr); // может для диагностики
+
   sendMessage(currentChatPtr, currentUserPtr, acquaireMessage());
 }
 
@@ -207,6 +201,9 @@ void Chats::savedata() {
   save.saveUsers(users);
   save.saveChats(chats);
 }
+
+
+
 
 void Chats::localCycle() {
   while (!Q)  // цикл
@@ -280,10 +277,15 @@ void Chats::localCycle() {
   }
 }
 
-void Chats::remoteCycle() {
-  // тут добавил новые объявления/////////////////////////////
+
+// If  no  pending  connections  are  present  on  the queue, and the socket is not marked as
+// nonblocking, accept() blocks the caller until a connection is present.
+
+void Chats::remoteCycle(TCP_server _tcp_server) {
+
+  TCP_server tcp_server(_tcp_server);
+
   Server server;
-  TCP_server tcp_server;
   std::string string_to_send{"Привет от сервера!"};
   std::string string_for_receive;
   User_t user;
@@ -291,15 +293,10 @@ void Chats::remoteCycle() {
   Chat_t chat;
   queue_string_t usernames;
   queue_message_t lastMessages;
-  // тут добавил новые объявления конец/////////////////////////////
-
-  tcp_server.configureConnection();
-  tcp_server.listening();
-  tcp_server.openConnection();
-
   bool firstcycle{true};
 
-  while (true) {
+
+ while (true) {
     if (!firstcycle) {
       tcp_server.send(string_to_send);
     }
@@ -308,6 +305,7 @@ void Chats::remoteCycle() {
 
     ReceivedData receivedData(server.interpretString(string_for_receive));
     switch (receivedData._type) {
+
       case REGISTRATION:
         user = userRegistration(
             server.retrieveUser(std::string(receivedData._str_view)));
@@ -327,6 +325,7 @@ void Chats::remoteCycle() {
         }
         string_to_send = "Активный пользователь: " + user->getLogin();
         break;
+
       case COMPANION:
         if (!user) {
           string_to_send = "Вы не вошли в учётную запись";
@@ -342,7 +341,6 @@ void Chats::remoteCycle() {
           string_to_send = "чат не существует";
           break;
         };
-
         string_to_send = "Активный чат: " + chat->getChatName() +
                          " с пользователем: " + companion->getLogin();
         break;
@@ -371,6 +369,7 @@ void Chats::remoteCycle() {
         std::cout << "getusernames step"
                   << std::endl;  // диагностическая информация на сервер
         usernames = getUserNames();
+
       case CONTINUE_USERNAMES:
         std::cout << "continueusernames step"
                   << std::endl;  // диагностическая информация на сервер
@@ -389,18 +388,12 @@ void Chats::remoteCycle() {
           string_to_send = "чат не существует";
           break;
         };
-        //lastMessages = chat->getLastMessages();
+
         lastMessages = getUnreadMessages(chat);
 
         std::cout << "last messages from queue step get_messages start "
                   << std::endl;  // диагностическая информация на сервер
-//!!! тут проверить указатель
-        // while (!lastMessages->empty()) {
-        //   std::cout << std::endl;
-        //   lastMessages->front().printMessage();
-        //   std::cout << std::endl;
-        //   lastMessages->pop();
-        // }
+
         std::cout << "last messages from queue step get_messages end "
                   << std::endl;  // диагностическая информация на сервер
 
@@ -414,14 +407,14 @@ void Chats::remoteCycle() {
         };
         if (!lastMessages->empty()) {
           {
-            Message msg{lastMessages->front()}; // аккуратней, тут всё зависит только от конструктора!
+            Message msg{lastMessages->front()};  // аккуратней, тут всё зависит
+                                                 // только от конструктора!
             string_to_send = server.getMessageString(msg);
-
             db_queries_dml.update_Status_Delivered_fc(msg.getId());
             std::cout << "lastMessages->front().getId()" << msg.getId()
                       << std::endl;
           }
-            lastMessages->pop();
+          lastMessages->pop();
 
           std::cout << "one message pop "
                     << std::endl;  // диагностическая информация на сервер
@@ -451,13 +444,6 @@ void Chats::remoteCycle() {
         break;  // диагностическая информация на сервер
     }
   }
+  //shutdown();
 }
-
-// void Chats::addMessage(const Chat_t chat, const std::shared_ptr<Message> msg) {
-//   if (chat && msg) {
-//     chat->addMessage(std::move(*msg));
-//   }
-// }
-
-
 

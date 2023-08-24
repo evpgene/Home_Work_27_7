@@ -10,6 +10,8 @@
 #define MESSAGE_LENGTH 1024 // Максимальный размер буфера для данных
 #define PORT 7777           // Будем использовать этот номер порта
 
+
+
 class TCP_server
 {
 private:
@@ -22,7 +24,7 @@ public:
     TCP_server(/* args */);
     ~TCP_server();
     void configureConnection();
-    void openConnection();
+    int openConnection();
     void closeConnection();
     bool send(const std::string& str);
     bool receive(std::string& str);

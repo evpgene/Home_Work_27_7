@@ -148,6 +148,7 @@ queue_string_t Chats::getUserNames() {
   if (!all_users) {
     return nullptr;
   }
+
   while (!all_users->empty()) {
     usernames->push(all_users->front().getLogin());
     all_users->pop();
@@ -253,3 +254,5 @@ std::string Chats::acquaireMessage(void) {
   std::getline(std::cin, message_text);
   return std::string(message_text);
 }
+
+

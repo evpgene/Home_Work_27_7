@@ -1,0 +1,17 @@
+Chat_client/chat_client
+Chat_server/chat_server
+Chat_server/Chat.o
+Chat_server/Chats.o
+Chat_server/DB_Queries_DDL.o
+Chat_server/DB_Queries_DML.o
+Chat_server/Main
+Chat_server/Main.o
+Chat_server/Message.o
+Chat_server/SaveRestor.o
+Chat_server/Server.o
+Chat_server/TCP_server
+Chat_server/TCP_server.o
+Chat_server/User.o
+Chat_server/build/Debug/Main.o
+ERR.TXT
+cppcheck.cmd

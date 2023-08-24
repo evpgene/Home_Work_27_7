@@ -13,6 +13,11 @@
 #include "TCP_server.h"
 #include "User.h"
 
+
+//New
+// #include <thread>
+#include <mutex>
+
 using User_t = std::shared_ptr<User>;  // указатель на юзера
 using Chat_t = std::shared_ptr<Chat>;  // указатель на чат
 using Message_t = std::shared_ptr<Message>;  // указатель на сообщение
@@ -32,10 +37,18 @@ class Chats {
   DB_Queries_DDL db_queries_ddl;
   DB_Queries_DML db_queries_dml;  // DML запросы к MySQL
   size_t lastSendMessageId{0};
+  
+
+  //new
+  //std::mutex mut;
+  //TCP_server tcp_server;
 
  public:
   Chats(){};
   ~Chats(){};
+
+  //void operator() (const int msg);
+
 
   friend void SaveRestor::saveUsers(std::vector<User_t>& users);
 
@@ -71,7 +84,7 @@ class Chats {
   void savedata();
 
   void localCycle(void);
-  void remoteCycle();
+  void remoteCycle(TCP_server _tcp_server);
 
   User_t getUserByLogin(const std::string& companion);
   std::string getChatNameByUsers(const User_t user, const User_t companion);
@@ -88,4 +101,8 @@ class Chats {
                         std::string message_text);
   void saveLastSendMessageId(size_t id);
   std::string acquaireMessage(void);
+
+  //new
+  // void multiThreadCycle(void);
+  // void prepareTCP_Server(void);
 };

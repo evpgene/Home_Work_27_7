@@ -43,6 +43,7 @@ no_errors DB_Queries_DML::connectDB_close(void) {
 
 // V
 insert_id_t DB_Queries_DML::insert_User_fc(const User_t user) {
+  std::lock_guard<std::mutex> guard(mutex);
   Insert_User& arg_struct = Insert_User_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -69,6 +70,7 @@ insert_id_t DB_Queries_DML::insert_User_fc(const User_t user) {
 // extracts the user with certain id. If some errors or not such id exists -
 // returning nullptr
 User_t DB_Queries_DML::select_User_By_Id_fc(const size_t id) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_User_By_Id& arg_struct = Select_User_By_Id_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -106,6 +108,7 @@ User_t DB_Queries_DML::select_User_By_Id_fc(const size_t id) {
 // Returns a pointer to the found user. If the user is not found - returns a
 // nullpointer
 User_t DB_Queries_DML::select_User_By_Login_fc(const std::string& login) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_User_By_Login& arg_struct = Select_User_By_Login_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -141,6 +144,7 @@ User_t DB_Queries_DML::select_User_By_Login_fc(const std::string& login) {
 }
 
 queue_user_t DB_Queries_DML::select_Users_All_fc(void) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Users_All& arg_struct = Select_Users_All_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -181,6 +185,7 @@ queue_user_t DB_Queries_DML::select_Users_All_fc(void) {
 
 // V
 insert_id_t DB_Queries_DML::insert_Chat_fc(const std::string chatname) {
+  std::lock_guard<std::mutex> guard(mutex);
   Insert_Chat& arg_struct = Insert_Chat_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -206,6 +211,7 @@ insert_id_t DB_Queries_DML::insert_Chat_fc(const std::string chatname) {
 
 // V
 Chat_t DB_Queries_DML::select_Chat_By_Id_fc(const size_t id) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Chat_By_Id& arg_struct = Select_Chat_By_Id_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -240,6 +246,7 @@ Chat_t DB_Queries_DML::select_Chat_By_Id_fc(const size_t id) {
 }
 // V
 Chat_t DB_Queries_DML::select_Chat_By_Name_fc(const std::string& name) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Chat_By_Name& arg_struct = Select_Chat_By_Name_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -286,6 +293,7 @@ Chat_t DB_Queries_DML::select_Chat_By_Name_fc(const std::string& name) {
 insert_id_t DB_Queries_DML::insert_Chat_User_fc(const size_t chat_id,
                                               const size_t user_id,
                                               const size_t user_no) {
+  std::lock_guard<std::mutex> guard(mutex);
   Insert_Chat_User& arg_struct = Insert_Chat_User_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -310,6 +318,7 @@ insert_id_t DB_Queries_DML::insert_Chat_User_fc(const size_t chat_id,
 
 size_t DB_Queries_DML::select_Chat_User_fc(const size_t chat_id,
                                            const size_t user_id) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Chat_User& arg_struct = Select_Chat_User_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -351,6 +360,7 @@ size_t DB_Queries_DML::select_Chat_User_fc(const size_t chat_id,
 // V
 insert_id_t DB_Queries_DML::insert_Message_fc(const size_t chat_user_id,
                                             std::string message) {
+  std::lock_guard<std::mutex> guard(mutex);
   Insert_Message& arg_struct = Insert_Message_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -374,6 +384,7 @@ insert_id_t DB_Queries_DML::insert_Message_fc(const size_t chat_user_id,
 
 Message_t DB_Queries_DML::select_Message_fc(const size_t chat_id,
                                             const size_t message_id) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Message& arg_struct = Select_Message_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -420,6 +431,7 @@ Message_t DB_Queries_DML::select_Message_fc(const size_t chat_id,
 
 queue_message_t DB_Queries_DML::select_Messages_Mult_fc(
     const size_t chat_id, const size_t message_status) {
+  std::lock_guard<std::mutex> guard(mutex);
   Select_Messages_Mult& arg_struct = Select_Messages_Mult_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -468,6 +480,7 @@ queue_message_t DB_Queries_DML::select_Messages_Mult_fc(
 
 affected_rows_t DB_Queries_DML::update_Status_Delivered_fc(
     const size_t message_id) {
+  std::lock_guard<std::mutex> guard(mutex);
   Update_Status_Delivered& arg_struct = Update_Status_Delivered_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
@@ -487,6 +500,7 @@ affected_rows_t DB_Queries_DML::update_Status_Delivered_fc(
 affected_rows_t DB_Queries_DML::update_Status_Read_fc(
     const size_t chat_user_id, const size_t message_id_begin,
     const size_t message_id_end) {
+  std::lock_guard<std::mutex> guard(mutex);
   Update_Status_Read& arg_struct = Update_Status_Read_struct;
   auto& query = arg_struct.Query_struct;
   auto& result = arg_struct.Result_struct;
