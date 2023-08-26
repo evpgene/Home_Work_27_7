@@ -15,3 +15,4 @@ Chat_server/User.o
 Chat_server/build/Debug/Main.o
 ERR.TXT
 cppcheck.cmd
+Chat_server/Logger.o

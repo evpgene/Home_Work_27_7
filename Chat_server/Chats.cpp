@@ -2,6 +2,10 @@
 #include "Chats_functions.cpp"
 #include "Chats.h"
 
+Chats::Chats() {}
+
+Chats::~Chats() {}
+
 void Chats::prepare(void) {
   // Создаём базу
   MYSQL_Config mysqlconfig_ddl;
@@ -169,6 +173,7 @@ void Chats::write() {
   }
 
   sendMessage(currentChatPtr, currentUserPtr, acquaireMessage());
+
 }
 
 void Chats::logoff() {
@@ -295,13 +300,15 @@ void Chats::remoteCycle(TCP_server _tcp_server) {
   queue_message_t lastMessages;
   bool firstcycle{true};
 
-
- while (true) {
+  while (true) {
     if (!firstcycle) {
       tcp_server.send(string_to_send);
     }
     firstcycle = false;
-    tcp_server.receive(string_for_receive);
+    bool not_ok_receive = tcp_server.receive(string_for_receive);
+    if (not_ok_receive) {
+      return;
+    }
 
     ReceivedData receivedData(server.interpretString(string_for_receive));
     switch (receivedData._type) {
@@ -337,7 +344,12 @@ void Chats::remoteCycle(TCP_server _tcp_server) {
           break;
         }
         chat = getChatByUsers(user, companion);
+        // если нет чата, создаём его
+        if(!chat){
+          chat = createChatByUsers(user, companion);
+        }
         if (!chat) {
+
           string_to_send = "чат не существует";
           break;
         };
@@ -361,6 +373,8 @@ void Chats::remoteCycle(TCP_server _tcp_server) {
             string_to_send = "Сообщение не доставлено или повреждено";
           }
           addMessage(chat, msg);
+          logger.writeLine(chat, user, msg);
+          std::cout << logger.readLine() << std::endl;
           string_to_send = "принято";
         }
         break;

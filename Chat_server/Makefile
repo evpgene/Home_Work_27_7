@@ -18,6 +18,9 @@ Message.o: Message.h Message.cpp
 Chat.o: Chat.h Chat.cpp
 	$(COMPILE) Chat.o Chat.cpp $(FLAGS)
 
+Logger.o: Logger.h Logger.cpp
+	$(COMPILE) Logger.o Logger.cpp $(FLAGS)
+
 Chats.o: Chats.h Chats_functions.cpp Chats.cpp
 	$(COMPILE) Chats.o Chats.cpp $(FLAGS)
 
@@ -36,8 +39,8 @@ DB_Queries_DML.o: DB_Queries_DML.h DB_Queries_DML_structures.h DB_Queries_DML_ut
 Main.o: Main.cpp
 	$(COMPILE) Main.o Main.cpp $(FLAGS)
 
-chat_server: Main.o DB_Queries_DML.o DB_Queries_DDL.o Server.o TCP_server.o Chats.o Chat.o Message.o User.o SaveRestor.o
-	$(LINK) chat_server Main.o DB_Queries_DML.o DB_Queries_DDL.o Server.o TCP_server.o Chats.o Chat.o Message.o User.o SaveRestor.o $(FLAGS)
+chat_server: Main.o DB_Queries_DML.o DB_Queries_DDL.o Server.o TCP_server.o Logger.o Chats.o Chat.o Message.o User.o SaveRestor.o
+	$(LINK) chat_server Main.o DB_Queries_DML.o DB_Queries_DDL.o Server.o TCP_server.o Logger.o Chats.o Chat.o Message.o User.o SaveRestor.o $(FLAGS)
 
 
 

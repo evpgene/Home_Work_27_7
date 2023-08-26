@@ -340,8 +340,8 @@ struct Update_Status_Delivered {
   const std::string query{
       "UPDATE messages SET status = 2, dt_delivered = CURRENT_TIMESTAMP() WHERE id = ? AND status != 2 AND status != 3"};
   struct query {
-    const int param_count{3};  // Number of prepared parameters expected
-    MYSQL_BIND bind[3];
+    const int param_count{1};  // Number of prepared parameters expected
+    MYSQL_BIND bind[1];
     ParamUint id = ParamUint(bind[0]);      // First parameter
     // ParamUint message_id_begin = ParamUint(bind[1]);  // Second parameter
     // ParamUint message_id_end = ParamUint(bind[2]);    // Third parameter

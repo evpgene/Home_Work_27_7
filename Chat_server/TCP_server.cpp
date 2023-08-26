@@ -1,8 +1,8 @@
 #include "TCP_server.h"
 
-TCP_server::TCP_server(/* args */) {}
+TCP_server::TCP_server() {}
 
-TCP_server::~TCP_server() {}
+TCP_server::~TCP_server() { closeConnection();}
 
 void TCP_server::configureConnection() {
   // Создадим сокет
@@ -73,17 +73,27 @@ bool TCP_server::receive(std::string& str) {
 
   bzero(message, MESSAGE_LENGTH);
   bool retval = read(connection, message, sizeof(message));
-  if (strncmp("end", message, 3) == 0) {
+    if (strncmp("", message, 1) == 0) {
     std::cout << "Client Exited." << std::endl;
     std::cout << "Server is Exiting..!" << std::endl;
-    // break;
+    return true;
   }
+  if (strncmp("&itExit&", message, 8) == 0) {
+    std::cout << "Client Exited." << std::endl;
+    std::cout << "Server is Exiting..!" << std::endl;
+    return true;
+  }
+  // if (strncmp("", message, 0) == 0) {
+  //   std::cout << "Client Exited." << std::endl;
+  //   std::cout << "Server is Exiting..!" << std::endl;
+  //    return true;
+  // }
   str = std::string(message);
   // std::cout << "Data received from client: " << message << std::endl;
   std::cout << "received from client message start " << std::endl;
   std::cout << message << std::endl;
   std::cout << " received from client message end" << std::endl;
-  return retval;
+  return false;
 }
 
 void TCP_server::closeConnection() {

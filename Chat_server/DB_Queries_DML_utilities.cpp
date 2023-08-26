@@ -1,7 +1,7 @@
 #include "DB_Queries_DML.h"
 
 
-const int silent_level{1};
+const int silent_level{0};
 const int verify_affected_rows_sl{1};    // sl - silent level
 const int verify_param_count_sl{1};      // sl - silent level
 const int verify_field_count_sl{1};      // sl - silent level
